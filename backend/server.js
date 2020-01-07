@@ -13,15 +13,15 @@ var todoSchema = mongoose.Schema({
 
 var Todo = mongoose.model('Todo', todoSchema);
 
-module.exports = (app) => {
-
     app.use(bodyParser());
     app.use(cors());
 
+ 
     app.get('/', (req, res) => {
         Todo.find({}, (err, data) => {
             if(err) throw err;
-            res.end(JSON.stringify({data}));
+            console.log('Get: ' + data);
+            res.end(JSON.stringify({items:data}));
         });
         
     });
@@ -32,8 +32,8 @@ module.exports = (app) => {
         
         var newTodo = Todo(req.body).save((err, data) => {
             if (err) throw console.log(err);
-            res.end(JSON.stringify({item: data}));
-            console.log(data);
+            console.log('Post: ' + data);
+            res.end(JSON.stringify({items: data}));
         });
 
         
@@ -53,20 +53,19 @@ module.exports = (app) => {
                 }catch(err){
                     res.status(400).json('Err' + err);
                 }
-            }
-        */
+            }*/
+        
         
     });
 
-    app.delete('/todo/:item', (req, res) => {
+    app.delete('/:item', (req, res) => {
         
         Todo.find({item: req.params.item.replace(/\-/g, " ")}).remove((err, data) => {
             if(err) throw err;
-            res.end(JSON.stringify({todos: data}));
+            console.log('Delete: ' + data);
+            res.end(JSON.stringify({items: data}));
         });
     });
-
-};
 
 //listen to port
 app.listen(5000);

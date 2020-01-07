@@ -15,37 +15,66 @@ class Body extends Component{
     componentDidMount(){
         axios.get('http://localhost:5000/')
         .then(res => {
-            this.setState({ items: res.data })
+            this.setState({ items: res.data });
+            
         }).catch(err => console.log(err));
     }
+
 
     handleChange = (input) => {
         const newItem = input;
 
         this.setState({inputItem: newItem});
+        
     }
 
     onSubmit = (e) => {
         e.preventDefault();
-        const newItem = this.state.items.concat(this.state.inputItem);
+        
+        const newItem = this.state.inputItem;
 
-        this.setState({
-          items: newItem
-        })
+        console.log(newItem);
 
-        axios.post('http://localhost:5000/newitem', { newItem })
+        axios.post('http://localhost:5000/' + { newItem })
         .then(res => console.log(res.data))
         .catch(err => console.log(err));
+        //const newItem = this.state.items.concat(this.state.inputItem);
+/*
+        this.setState({
+          items: this.state.items.concat(this.state.inputItem)
+        })
+
+        console.log('New:');
+        console.log(newItem);*/
+        
+        
         
     }
     
-    handleClick = (item) => {
+    handleClick = itemName => {
     
-        const removeItem = this.state.items.filter(i => {
-            return i !== item;
-        });
+        /*axios.delete('http://localhost:5000/' + itemName)
+        .then(res => console.log(res.data));*/
+
+        console.log(itemName.item)
+        console.log(this.state.items);
         
-        this.setState({items: [...removeItem]})
+        /*const removeItem = this.state.items.filter(i => {
+            return i !== itemName;
+        });*/
+
+        const removeItem = this.state.items.filter(item => console.log(item));
+
+        console.log('Final: ' +removeItem);
+        /*
+        this.setState({
+            items: this.state.items.filter(data => data.item !== itemName)
+        })*/
+
+
+        
+        
+       // this.setState({items: [...removeItem]})
     }
 
     render(){
@@ -53,6 +82,7 @@ class Body extends Component{
         const { handleClick } = this;
         const { onSubmit } = this;
         const { handleChange } = this;
+        const { items = [ ]} = this.state.items;
 
         return(
             <div className="Todo-table">
@@ -61,8 +91,8 @@ class Body extends Component{
                 <button type="submit" onClick={onSubmit}>Add Item</button>
               </form>
               <ul>
-                {this.state.items.map((item) => (
-                    <li key={item.toString()} onClick={(e) => handleClick(item)}>{item}</li>
+                {items.map((item) => (
+                    <li key={item._id} onClick={() => handleClick(item)}>{item.item}</li>
                 ))}
                 
               </ul>
